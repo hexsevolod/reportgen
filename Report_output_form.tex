@@ -1,0 +1,45 @@
+%Description: report output file form
+%Author:  Raudik Sergei (Raudik_sa@mail.ru)
+%Created at: Wed Feb 25 22:44 MSK 2015
+%Used file: scheme is "sch.png", data is "param.csv", images are "img"
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage[OT1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\title{Лабораторная работа №"nn"\\"Title"}
+\author{"Human"}
+\begin{document}
+\maketitle
+
+\begin{tabular}{p{12cm} l}
+\textit{Цель работы:\newline} "" \newline \newline
+\textit{Оборудование:\newline}  
+%&\multirow{1}{*}{ \includegraphics[scale=0.5]{sch.png}}\\ 
+\end{tabular}\\ \\
+
+\textit{Ход Работы:}
+\begin{itemize}
+\item[1] 
+\item[2] 
+\end{itemize}
+
+\textit{Результаты:\\}
+%\includegraphics[scale=1]{img}
+%\includegraphics[scale=1]{img2}
+% table can be there
+
+\textit{Формулы:}
+\begin{align*}
+
+\end{align*}
+
+\textit{Выводы:\\}
+
+\end{document}

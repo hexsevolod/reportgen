@@ -4,7 +4,7 @@ Machine
   there would be a lot of math
   I want: russian babel, english babel 
   Title is "Capacitor"
-  scheme is in "sch.png"
+  scheme is in sch.png
   data is stored in param.csv
   images are in img
 Human

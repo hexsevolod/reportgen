@@ -1,5 +1,5 @@
 Machine
-  Make usual article named "report.tex"
+  Make  usual article named "report.tex"
   with 12pt font
   there would be a lot of math
   I want: russian babel, english babel 

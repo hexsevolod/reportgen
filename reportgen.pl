@@ -4,15 +4,12 @@
 # Author:  Tiknonenko Iliya (iliya.t@mail.ru)
 # Created at: Sun Feb 22 18:41:03 MSK 2015
 # Computer: tis 
-# System: Linux 3.18.4-1-ARCH on i686
-#
 #----------------------------------------------------------------------
-
 use strict;
 use warnings;
 
 #should rewrite using modules
-#require "rr.pl";
+require "parser.pl";
 
 my $inp;
 my $cmdfilename;
@@ -45,72 +42,11 @@ else {
 }
 
 open(my $cmdfile, '<', $cmdfilename) or die "$cmdfilename not exist";
+#parsing
+my %docdata = parse($cmdfile);
 
-#a kind of parser
 
-my %docdata;
-my $state = 'wait_begin';
-foreach (<$cmdfile>){
-#specifying begin and end of block
-    if(/^\S.*/){
-        if ($state eq 'wait_begin'){
-            chomp($_);
-            $docdata{machine} = $_;
-            $state = 'wait_end';
-        }
-        else {
-            chomp($_);
-            $docdata{human} = $_;
-            last;#equivalent to 'break'
-        }
-    }
-#parsing commands/keywords
-    else {
-        if (/\b(report|article|book)\b.*\bnamed\b\s"(.*)"/) {
-            $docdata{type} = $1;
-            $reportfilename = $2;
-        }
-        elsif (/\bwith\b\s(\d*)?pt\sfont/){
-            $docdata{font} = $1;
-        }
-        elsif (/\bmath\b/) { $docdata{math} = 1; }
-        elsif (/I\swant:/){
-# in my point of view  
-# i will use 'I want'
-# for some special case
-# that need some LaTeX knowledge
-            if (/want:.*\bbabel\b/){
-                my $i;
-                if (my @captured = /(?::|,)\s+(?:(\w+)\sbabel)+/g){
-                    foreach $i (@captured){
-                        if ($i ne $captured[$#captured]){
-                            $docdata{babel}.= "".$i.",";
-                        }
-                        else{
-                            $docdata{babel}.= "".$i;
-                        }
-                    }
-                }
-            }
-#elsif...
-        }
-        elsif (/\b(?:is|are|am)\b/){
-            if (/\b(?:is|are|am)\b(?:\s+\w+)*\s+\bin\b/){
-#capturing 'param is in taram'
-                if(/(\w+)\s+(?:is|are|am).*\bin\b\s+(\S+)/){
-                    $docdata{$1}=$2;
-                }
-            }
-            elsif(/(\w+)\s+\b(?:is|are|am)\b\s+(".*")/){
-#capturing 'param is "taram"'
-                $docdata{$1}=$2;    
-            }
-        }
-    }
-}
-#end of human's speech parser
-
-open(my $report , '>', $reportfilename);
+open(my $report , '>', $docdata{reportfilename});
 
 print $report '\documentclass'."\[$docdata{font}pt, a4paper\]{".$docdata{type}."}\n";
 print $report '\usepackage[utf8]{inputenc}'."\n";
@@ -123,7 +59,16 @@ if (defined($docdata{babel})){
     print $report '\usepackage['.$docdata{babel}.']'.'{babel}'."\n";
 }
 print $report '\author{'.$docdata{human}."}\n";
-close $cmdfile, $report;
+
+print $report "\\begin{document}\n";
+if (defined($docdata{data}) or defined($docdata{data})){
+    $docdata{table} = $docdata{data};
+    print $report `./csv2latex.pl $docdata{table}`;
+}
+print $report "\\end{document}\n";
+
+close $cmdfile;
+close $report;
 #just log
 #my @keys = keys %docdata; 
 #foreach (@keys){
@@ -132,6 +77,6 @@ close $cmdfile, $report;
 print "
 Hi, $docdata{human}!
 I have done what you wanted.
-You may find output in $reportfilename.
+You may find output in $docdata{reportfilename}.
 Good luck.
     $docdata{machine}\n ";

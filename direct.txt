@@ -1,3 +1,7 @@
+#this line is a comment
+#you need to specify a block
+#where instructions are located
+
 Machine
   Make usual article named "report.tex" like "pattern1.tex"
   with 12pt font

@@ -8,15 +8,51 @@
 use strict;
 use warnings;
 
-my $defaultreportname='report.tex';
+sub check_docdata{
+#    print shift;
+    my (%hash) = @_;
+    my %defaults = (
+            type => 'article',
+            reportfilename => 'report.txt',
+            pattern => 'patterns/default',
+            font => '12pt',
+            babel => 'english'
+            );
+
+    if (not exists $hash{machine}) { 
+        die "
+            I'm too proud to be unnamed.
+            Sinserly yours,
+                     ".`uname -n`."\n";
+    }
+    elsif (not exists $hash{human}) {
+        my $probable_human = `whoami`;
+        chomp($probable_human);
+        die "
+            I am not allowded to talk to strangers.
+            Maybe you are ".$probable_human." ? \n";
+    }
+
+    foreach (keys %defaults){
+        if (not exists $defaults{$_}){
+            $hash{$_} = $defaults{$_};
+        }
+    }
+    return %hash;
+}
+
 sub parse {
     my ($cmdfile) = @_;
     my %docdata;
     my $state = 'wait_begin';
     foreach (<$cmdfile>){
-#specifying begin and end of block
         if(/^\S.*/){
-            if ($state eq 'wait_begin'){
+#for comments
+            if (/^#/){
+                next;
+            }
+#specifying begin and end of block
+            elsif ($state eq 'wait_begin'){
                 chomp($_);
                 $docdata{machine} = $_;
                 $state = 'wait_end';
@@ -35,15 +71,10 @@ sub parse {
                     if (/named\s+"(\S+)"/){
                         $docdata{reportfilename} = $1;
                     }
-                    else {
-                        $docdata{reportfilename} = $defaultreportname;
-                    }
+                    
                     if (/like\s+"(\S+)"/) {
                         $docdata{pattern}=$1;
                     }
-                }
-                else {
-                    die "unknown doctype\n";
                 }
             }
             elsif (/\bwith\b\s(\d*)?pt\sfont/){
@@ -85,7 +116,9 @@ sub parse {
         }
     }
 #end of human's speech parser
-    return %docdata;
+#checking some valuable values
+#or setting them)
+    return check_docdata(%docdata);
 }
-
+1;
  

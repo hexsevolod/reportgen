@@ -8,6 +8,44 @@
 use strict;
 use warnings;
 
+my $cmdfile;
+
+sub eval_opt {
+    my ($i, $action, $error) = @_;
+    if (exists $ARGV[$i+1] and $ARGV[$i+1] =~ m/^[^-].*/) {
+        $action->();
+    }
+    else {
+        die $error;
+    } 
+
+}
+sub extract {
+    my $i = 0; 
+    while (exists $ARGV[$i]){
+        if ($ARGV[$i] eq '-h'){
+            print "
+This is R E P O R T G E N parser \n
+Usage: parser -f <file with instructions>
+              [-i python|perl]
+                  ";
+            $i++;
+        }
+        elsif ($ARGV[$i] eq '-i' or $ARGV[$i] eq '--input') {
+            eval_opt($i, 
+                    sub { 
+                    open $cmdfile, '<', $ARGV[$i+1] 
+                    or die "file not exists\n";
+                    },
+                    "file with directives not specified\n");
+            $i+=2;
+        }
+        else {
+            die "unknown command-line argument\n";
+        }
+    }
+}
+
 sub check_docdata{
 #    print shift;
     my (%hash) = @_;
@@ -42,7 +80,7 @@ sub check_docdata{
 }
 
 sub parse {
-    my ($cmdfile) = @_;
+    extract();
     my %docdata;
     my $state = 'wait_begin';
     foreach (<$cmdfile>){
@@ -119,6 +157,16 @@ sub parse {
 #checking some valuable values
 #or setting them)
     return check_docdata(%docdata);
+    close $cmdfile;
 }
-1;
- 
+#rewrited to work independenly
+
+my %data = parse();
+#print %data;
+use YAML;
+
+print Dump (\%data);
+
+
+
+

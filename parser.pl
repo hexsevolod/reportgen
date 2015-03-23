@@ -165,7 +165,7 @@ my %data = parse();
 #print %data;
 use YAML;
 
-print Dump (\%data);
+print Dump (\%data), "\n";
 
 
 

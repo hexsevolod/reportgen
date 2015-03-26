@@ -1,0 +1,32 @@
+#------------------------------------------------------------
+# Description: dictionary of synonyms
+# will be used while parsing pattern 
+# Author: Iliya Tikhonenko <iliya.t@mail.ru>
+# Created at: Thu Mar 26 22:00:26 MSK 2015
+#------------------------------------------------------------
+---
+img:
+    - pictures
+    - images
+    - imgs
+    - illustrations
+    - etchings
+    - drawings
+    - paintings
+title:
+    - title
+    - head
+    - header
+# different from imgs
+# because of different position
+scheme:
+    - scheme
+    - etching
+table:
+    - data
+    - table
+    - results
+#etc
+
+
+ 

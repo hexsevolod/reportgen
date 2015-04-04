@@ -11,6 +11,8 @@ Project is being written in `Perl` and `Python`
 - parser
 - set of default patterns
 - pattern generator 
-- convertor csv --> latex format of tables
+- convertor csv to latex format of tables
 - report creator (applies selected pattern)
 - bells and whisles
+
+![Communucation diagram](docs/communication\ modules.png)

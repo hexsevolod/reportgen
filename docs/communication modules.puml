@@ -1,0 +1,24 @@
+@startuml
+
+actor User
+participant "Main Module" as M
+participant "Syntax Analizer\n(Parser)" as Syn
+participant "Semantic Analizer" as Sem
+participant "Dictionary" as D
+participant "Template Engine" as T
+
+User --> M: File with instructoins
+M --> Syn: input (file | stdin)
+Syn --> Sem: AST Hash (key:value)
+Sem --> M: Normilized Model
+M --> T: Normilized Model + template
+activate T
+loop for all aliases from NM
+T --> D: resolve alias
+T <-- D: tag
+end
+T --> T: populate template
+T --> M: populated template
+deactivate T
+M --> User: store file
+@enduml

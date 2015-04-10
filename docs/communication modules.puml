@@ -4,14 +4,16 @@ actor User
 participant "Main Module" as M
 participant "Syntax Analizer\n(Parser)" as Syn
 participant "Semantic Analizer" as Sem
+participant "Structure analiser" as Str
 participant "Dictionary" as D
 participant "Template Engine" as T
 
 User --> M: File with instructoins
 M --> Syn: input (file | stdin)
 Syn --> Sem: AST Hash (key:value)
-Sem --> M: Normilized Model
-M --> T: Normilized Model + template
+Sem --> Str: Normalised Model
+Str --> M: Structured Model
+M --> T: Normalised & Structured Model + template
 activate T
 loop for all aliases from NM
 T --> D: resolve alias

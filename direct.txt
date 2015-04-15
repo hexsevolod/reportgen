@@ -3,7 +3,7 @@
 #where instructions are located
 
 Machine
-  Make usual article named "report.tex" like "pattern1.tex"
+  Make usual article named "report.tex" like "default.tex"
   with 12pt font
   there would be a lot of math
   I want: russian babel, english babel 

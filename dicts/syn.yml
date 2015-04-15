@@ -17,6 +17,9 @@ title:
     - title
     - head
     - header
+font:
+    - text_size
+    - font
 # different from imgs
 # because of different position
 scheme:
@@ -28,5 +31,3 @@ table:
     - results
 #etc
 
-
- 

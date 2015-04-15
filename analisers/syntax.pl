@@ -1,12 +1,15 @@
-#!/usr/bin/perl
-#----------------------------------------------------------------------
-# Description: REPORTGEN parser
-# Author:  Tiknonenko Iliya (iliya.t@mail.ru)
-# Created at: Mon Mar 2 22 20:30:00 MSK 2015
-# Computer: tis 
-#----------------------------------------------------------------------
+#! /usr/bin/perl
+
+#------------------------------------------------------------
+# Description: syntax analiser(parser) 
+# creates 'raw' hash 
+# Author: Iliya Tikhonenko <iliya.t@mail.ru>
+# Created at: Sat Apr 4 23:56:58 MSK 2015
+#------------------------------------------------------------
 use strict;
 use warnings;
+
+require "../dumper.pl";
 
 my $cmdfile;
 
@@ -26,9 +29,8 @@ sub extract {
         if ($ARGV[$i] eq '-h'){
             print "
 This is R E P O R T G E N parser \n
-Usage: parser -f <file with instructions>
-              [-i python|perl]
-                  ";
+Usage: parser -i <file with instructions>
+              ";
             $i++;
         }
         elsif ($ARGV[$i] eq '-i' or $ARGV[$i] eq '--input') {
@@ -46,41 +48,10 @@ Usage: parser -f <file with instructions>
     }
 }
 
-sub check_docdata{
-#    print shift;
-    my (%hash) = @_;
-    my %defaults = (
-            type => 'article',
-            reportfilename => 'report.txt',
-            pattern => 'patterns/default',
-            font => '12pt',
-            babel => 'english'
-            );
-
-    if (not exists $hash{machine}) { 
-        die "
-            I'm too proud to be unnamed.
-            Sinserly yours,
-                     ".`uname -n`."\n";
-    }
-    elsif (not exists $hash{human}) {
-        my $probable_human = `whoami`;
-        chomp($probable_human);
-        die "
-            I am not allowded to talk to strangers.
-            Maybe you are ".$probable_human." ? \n";
-    }
-
-    foreach (keys %defaults){
-        if (not exists $defaults{$_}){
-            $hash{$_} = $defaults{$_};
-        }
-    }
-    return %hash;
-}
-
 sub parse {
+    chdir ("../");
     extract();
+    if (not defined($cmdfile)) {die "I don't know what to do\n"};
     my %docdata;
     my $state = 'wait_begin';
     foreach (<$cmdfile>){
@@ -146,7 +117,7 @@ sub parse {
                         $docdata{$1}=$2;
                     }
                 }
-                elsif(/(\w+)\s+\b(?:is|are|am)\b\s+("\S")/){
+                elsif(/(\w+)\s+\b(?:is|are|am)\b\s+"(\S+)"/){
 #capturing 'param is "taram"'
                     $docdata{$1}=$2;    
                 }
@@ -156,17 +127,12 @@ sub parse {
 #end of human's speech parser
 #checking some valuable values
 #or setting them)
-    return check_docdata(%docdata);
+    return %docdata;
     close $cmdfile;
 }
-#rewrited to work independenly
 
 my %data = parse();
+
 #print %data;
-use YAML;
-
-print Dump (\%data), "\n";
-
-
-
+print dump_data(\%data);
 

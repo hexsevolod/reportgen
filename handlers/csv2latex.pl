@@ -9,6 +9,7 @@
 use strict;
 use warnings;
 
+chdir("../");
 my $fname = $ARGV[0]; 
 open (my $csvfile, "<", $fname) or die "file $fname not exists: $!\n";
 my @line = split(/,/, <$csvfile>);

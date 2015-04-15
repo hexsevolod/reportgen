@@ -8,15 +8,16 @@
 use strict;
 use warnings;
 
-#should rewrite using modules
-require "parser.pl";
+#TODO rewrite using modules 
+#and Getopt::Std instead of hard handling
+#we are not cyclists
+require "dumper.pl";
 
-my $inp;
 my $cmdfilename;
 my $reportfilename;
 sub prompt{
     print "".$_[0]."\n";
-    $inp = <>;
+    my $inp = <>;
     chomp($inp);
     return $inp;
 }
@@ -41,42 +42,10 @@ else {
     $cmdfilename = $ARGV[0];
 }
 
-open(my $cmdfile, '<', $cmdfilename) or die "$cmdfilename not exist";
-#parsing
-my %docdata = parse($cmdfile);
-
-
-open(my $report , '>', $docdata{reportfilename});
-
-print $report '\documentclass'."\[$docdata{font}pt, a4paper\]{".$docdata{type}."}\n";
-print $report '\usepackage[utf8]{inputenc}'."\n";
-if ($docdata{math} == 1){
-    print $report '\usepackage{amsmath}'."\n".
-          '\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
-}
-
-if (defined($docdata{babel})){
-    print $report '\usepackage['.$docdata{babel}.']'.'{babel}'."\n";
-}
-print $report '\author{'.$docdata{human}."}\n";
-
-print $report "\\begin{document}\n";
-if (defined($docdata{data}) or defined($docdata{data})){
-    $docdata{table} = $docdata{data};
-    print $report `./csv2latex.pl $docdata{table}`;
-}
-print $report "\\end{document}\n";
-
-close $cmdfile;
-close $report;
-#just log
-#my @keys = keys %docdata; 
-#foreach (@keys){
-#    print "".$_.":".$docdata{$_}."\n";
-#}
-print "
-Hi, $docdata{human}!
-I have done what you wanted.
-You may find output in $docdata{reportfilename}.
-Good luck.
-    $docdata{machine}\n ";
+#parsing&applying
+chdir "analisers/";
+print `./syntax.pl -i $cmdfilename`;
+my $model = `./syntax.pl -i $cmdfilename | ./semantic.pl | ./structure.pl`;
+print $model;
+chdir "../";
+`echo "$model" | ./populate_pattern.pl`;

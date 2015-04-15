@@ -1,0 +1,63 @@
+%Description: report output file form
+%Author:  Raudik Sergei (Raudik_sa@mail.ru)
+%Created at: Wed Feb 25 22:22 MSK 2015
+
+%% ---will be inserted by a script--
+%\documentclass[12pt,a4paper]{article}
+%% --------
+\usepackage[utf8]{inputenc}
+%% --babel--
+%\usepackage[english,russian]{babel}
+%% ------
+\usepackage[OT1]{fontenc}
+%% --math--
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+%% -------
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+%% ---will be inserted by a script--
+%%\title{Лабораторная работа №"nn"\\"Title"}
+%%\author{"Human"}
+%% --------
+
+\begin{document}
+\maketitle
+
+\begin{tabular}{p{12cm} l}
+\textit{Цель работы:\newline} "" \newline \newline
+\textit{Оборудование:\newline}  
+\end{tabular}\\ \\
+
+\textit{Ход Работы:}
+\begin{enumerate}
+  \item 
+  \item 
+\end{enumerate}
+
+\textit{Cхема установки}
+<[scheme]>
+\textit{Результаты:\\}
+<[table]>
+
+\textit{Графики:\\}
+<[img]>
+
+\textit{Формулы:}
+\begin{align*}
+
+\end{align*}
+\textit{Формулы погрешностей:}
+\begin{align*}
+  & \sigma_x = \sqrt{\frac{\sum\limits_{i=0}^{N}x_i^2}{N}} \\
+  & \sigma = \frac{\sigma_x}{N-1};% N in other variants 
+\end{align*}
+
+\textit{Выводы:\\}
+\begin{enumerate}
+  \item 
+\end{enumerate}
+\end{document}

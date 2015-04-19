@@ -17,7 +17,7 @@ sub wrap{
     $fname =~ m/\/*(\w+)$/;
     my $label = $1;
     my $wrap;
-    $wrap .= '\begin{figure}[h]'."\n";
+    $wrap .= '\begin{figure}[H]'."\n";
     $wrap .= '\center{';
     $wrap .= '\includegraphics[width = 1.0\linewidth]{'."$fname"."}";
     $wrap .= "}\n";

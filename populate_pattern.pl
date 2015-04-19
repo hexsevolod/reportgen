@@ -21,9 +21,12 @@ sub report {
     foreach (@_) {
         if (m/<\[(\w+)\][^>]*>/) {
             print_tag($1);
+            print $1, "\n";
         }
         else {
-            print $report $_;
+            if (not m/^%/) {
+                print $report $_;
+            }
         }
     }
 }
@@ -36,26 +39,26 @@ sub print_tag {
     my %prembl = %{ $docdata{preamble} };
     
     switch ($tag) {
-        case m/table/  { print $report `./csv2latex.pl $contents{$tag}`    }
-        case m/img/    { print $report `./img2latex.pl -d $contents{$tag}` }
-        case m/scheme/ { print $report `./img2latex.pl -f $contents{$tag}` }
-        case m/author/ { print $report "\\author\{$prembl{author}\}\n"}
-        case m/babel/  { print $report '\usepackage['.$prembl{babel}.']'.'{babel}'."\n"}
-        case m/class/   {
+        case 'table'  { report `./csv2latex.pl $contents{table}`    }
+        case 'img'    { report `./img2latex.pl -d $contents{img}` }
+        case 'scheme' { report `./img2latex.pl -f $contents{scheme}` }
+        case 'author' { report "\\author\{$prembl{author}\}\n"}
+        case 'babel'  { report '\usepackage['.$prembl{babel}.']'.'{babel}'."\n"}
+        case 'class'  {
             if (defined $prembl{font}) {
-                print $report '\documentclass'."\[$prembl{font}pt, a4paper\]{".$prembl{type}."}\n";
+                report '\documentclass'."\[$prembl{font}pt, a4paper\]{".$prembl{type}."}\n";
             }
             else {
-                print $report '\documentclass'."\[a4paper\]{".$prembl{type}."}\n";
+                report '\documentclass'."\[a4paper\]{".$prembl{type}."}\n";
             }
         }
-        case m/math/   {
+        case 'math'   {
             if ($prembl{math} == 1) {
-                print $report '\usepackage{amsmath}'."\n".'\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
+                report '\usepackage{amsmath}'."\n".'\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
             }
         }
-        case m/imgdir/ { print $report '\graphicspath{'.$prembl{img}."/}\n" }
-        case m/title/  { print $report '\title{'.$prembl{title}."}\n" }
+        case 'imgdir' { report '\graphicspath{{'.$prembl{img}."/}}\n" }
+        case 'title'  { report '\title{'.$prembl{title}."}\n" }
         else { warn "unsupported tag"}
     }
 }
@@ -87,6 +90,7 @@ sub insert_preamble {
 
     }
     elsif (m/imgdir/) {
+        print "hello!\n";
         print $report '\graphicspath{'.$prembl{img}."/}\n";
     }
     elsif (m/title/) {
@@ -95,7 +99,7 @@ sub insert_preamble {
     
 }
 
-sub parse {
+sub parsepat {
     my $string;
     my @captured;
     while (<$pattern>)
@@ -110,11 +114,8 @@ sub parse {
         elsif (m/[^<|>]*<\[\w+\][^>]*/)
         {
             $string = $_; 
-            while (<$pattern>) {
+            while (<$pattern> and not m/>[^<|>]*$/) {
                 $string .= $_;
-                if (m/>[<|>]*$/) {
-                    last;
-                }
             }
 
             if (@captured = 
@@ -128,7 +129,7 @@ sub parse {
         }
     }
 }
-parse();
+parsepat();
 print "
 Hi, $docdata{controls}{human}!
 I have done what you wanted.

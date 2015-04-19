@@ -11,7 +11,7 @@
 <[babel]>
 %\usepackage[english,russian]{babel}
 %% ------
-\usepackage[OT1]{fontenc}
+\usepackage[T2A]{fontenc}
 %% --math--
 <[math]>
 %\usepackage{amsmath}
@@ -19,6 +19,7 @@
 %\usepackage{amssymb}
 %% -------
 \usepackage{graphicx}
+\usepackage{float}
 %\usepackage{multirow}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
@@ -31,6 +32,7 @@
 
 %% --------
 <[imgdir]>
+
 \begin{document}
 \maketitle
 
@@ -47,6 +49,7 @@
 
 \textit{Cхема установки}
 <[scheme]>
+
 \textit{Результаты:\\}
 <[table]>
 
@@ -54,14 +57,14 @@
 <[img]>
 
 \textit{Формулы:}
-\begin{align*}
-
-\end{align*}
+\begin{align}
+  x=y
+\end{align}
 \textit{Формулы погрешностей:}
-\begin{align*}
+\begin{align}
   & \sigma_x = \sqrt{\frac{\sum\limits_{i=0}^{N}x_i^2}{N}} \\
   & \sigma = \frac{\sigma_x}{N-1};% N in other variants 
-\end{align*}
+\end{align}
 
 \textit{Выводы:\\}
 \begin{enumerate}

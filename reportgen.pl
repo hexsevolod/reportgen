@@ -44,7 +44,6 @@ else {
 
 #parsing&applying
 chdir "analisers/";
-print `./syntax.pl -i $cmdfilename`;
 my $model = `./syntax.pl -i $cmdfilename | ./semantic.pl | ./structure.pl`;
 print $model;
 chdir "../";

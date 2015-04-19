@@ -33,46 +33,63 @@ sub print_tag {
     my $tag = shift;
     chdir "handlers/";
     my %contents = %{ $docdata{contents} };
+    my %prembl = %{ $docdata{preamble} };
+    
     switch ($tag) {
         case m/table/  { print $report `./csv2latex.pl $contents{$tag}`    }
         case m/img/    { print $report `./img2latex.pl -d $contents{$tag}` }
         case m/scheme/ { print $report `./img2latex.pl -f $contents{$tag}` }
+        case m/author/ { print $report "\\author\{$prembl{author}\}\n"}
+        case m/babel/  { print $report '\usepackage['.$prembl{babel}.']'.'{babel}'."\n"}
+        case m/class/   {
+            if (defined $prembl{font}) {
+                print $report '\documentclass'."\[$prembl{font}pt, a4paper\]{".$prembl{type}."}\n";
+            }
+            else {
+                print $report '\documentclass'."\[a4paper\]{".$prembl{type}."}\n";
+            }
+        }
+        case m/math/   {
+            if ($prembl{math} == 1) {
+                print $report '\usepackage{amsmath}'."\n".'\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
+            }
+        }
+        case m/imgdir/ { print $report '\graphicspath{'.$prembl{img}."/}\n" }
+        case m/title/  { print $report '\title{'.$prembl{title}."}\n" }
         else { warn "unsupported tag"}
     }
 }
 
 sub insert_preamble {
+    my ($tag) = @_;
     my %prembl = %{ $docdata{preamble} };
-    foreach (keys %prembl) {
-        if (m/author/) {
-            print $report "\\author\{$prembl{$_}\}\n";
+    if ($tag =~ m/author/) {
+        print $report "\\author\{$prembl{$_}\}\n";
+    }
+    
+    elsif (m/babel/) {
+        print $report '\usepackage['.$prembl{babel}.']'.'{babel}'."\n";
+    }
+    
+    elsif (m/type/) {
+        if (defined $prembl{font}) {
+            print $report '\documentclass'."\[$prembl{font}pt, a4paper\]{".$prembl{type}."}\n";
         }
-        
-        elsif (m/babel/) {
-            print $report '\usepackage['.$prembl{babel}.']'.'{babel}'."\n";
+        else {
+            print $report '\documentclass'."\[a4paper\]{".$prembl{type}."}\n";
         }
-        
-        elsif (m/type/) {
-            if (defined $prembl{font}) {
-                print $report '\documentclass'."\[$prembl{font}pt, a4paper\]{".$prembl{type}."}\n";
-            }
-            else {
-                print $report '\documentclass'.
-                    "\[a4paper\]{".$prembl{type}."}\n";
-            }
+    }
+    
+    elsif (m/math/) {
+        if ($prembl{math} == 1) {
+            print $report '\usepackage{amsmath}'."\n".'\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
         }
-        
-        elsif (m/math/) {
-            if ($prembl{math} == 1) {
-                print $report '\usepackage{amsmath}'."\n".'\usepackage{amsfonts}'."\n".'\usepackage{amssymb}'."\n";
-            }
-        }
-        elsif (m/img/) {
-            print $report '\graphicspath{'.$prembl{img}."/}\n";
-        }
-        elsif (m/title/) {
-            print $report '\title{'.$prembl{title}."}\n";
-        }
+    }
+    elsif (m/imgdir/) {
+        print $report '\graphicspath{'.$prembl{img}."/}\n";
+    }
+    elsif (m/title/) {
+        print $report '\title{'.$prembl{title}."}\n";
     }
     
 }
@@ -86,10 +103,9 @@ sub parse {
 # until there is no unclosed tags
 # everything is captured
 # tag values are in angular brackets
-        if (m/^%.*$/) {
+        if (m/^\%.*$/) {
             next;
         }
-
         elsif (m/[^<|>]*<\[\w+\][^>]*/)
         {
             $string = $_; 
@@ -105,10 +121,6 @@ sub parse {
                 report(@captured);
             }
 
-        }
-        elsif (m/\\begin\{document\}/) {
-            insert_preamble();
-            report($_);
         }
         else {
             report($_);

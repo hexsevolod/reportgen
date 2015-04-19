@@ -73,6 +73,7 @@ sub insert_preamble {
         elsif (m/title/) {
             print $report '\title{'.$prembl{title}."}\n";
         }
+
     }
     
 }

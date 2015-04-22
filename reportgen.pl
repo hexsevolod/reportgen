@@ -47,4 +47,5 @@ chdir "analisers/";
 my $model = `./syntax.pl -i $cmdfilename | ./semantic.pl | ./structure.pl`;
 print $model;
 chdir "../";
-`echo "$model" | ./populate_pattern.pl`;
+print `echo "$model" | ./populate_pattern.pl`;
+

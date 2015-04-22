@@ -36,7 +36,7 @@ Usage: parser -i <file with instructions>
         elsif ($ARGV[$i] eq '-i' or $ARGV[$i] eq '--input') {
             eval_opt($i, 
                     sub { 
-                    open $cmdfile, '<', $ARGV[$i+1] 
+                    open $cmdfile, '<:encoding(UTF-8)', $ARGV[$i+1] 
                     or die "file not exists\n";
                     },
                     "file with directives not specified\n");

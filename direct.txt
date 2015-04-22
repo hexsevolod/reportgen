@@ -2,13 +2,13 @@
 #you need to specify a block
 #where instructions are located
 
-Machine
+Суперкомпьтер
   Make usual article named "report.tex" like "default.tex"
   with 12pt font
   there would be a lot of math
-  I want: russian babel, english babel 
-  Title is "Capacitor"
+  I want: english babel, russian babel 
+  Title is "ОТЧЁТ!"
   scheme is in sch.png
   data is stored in param.csv
   images are in img
-Human
+Человек

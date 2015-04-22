@@ -7,13 +7,14 @@
 use strict;
 use warnings;
 use Switch;
+
 require "dumper.pl";
 
 my $docdata_ref = load_data();
 my %docdata = %$docdata_ref;
 
-open (my $pattern, '<', "patterns/".$docdata{controls}{pattern}) or die "Pattern not specified: $!";
-open (my $report, '>' , $docdata{controls}{reportfilename});
+open (my $pattern, '<:encoding(UTF-8)', "patterns/".$docdata{controls}{pattern}) or die "Pattern not specified: $!";
+open (my $report, '>:encoding(UTF-8)' , $docdata{controls}{reportfilename});
  
 
 # add pairs key:'value' to the tag handler
@@ -21,7 +22,6 @@ sub report {
     foreach (@_) {
         if (m/<\[(\w+)\][^>]*>/) {
             print_tag($1);
-            print $1, "\n";
         }
         else {
             if (not m/^%/) {
@@ -129,7 +129,11 @@ sub parsepat {
         }
     }
 }
+
 parsepat();
+
+#for unicode support
+binmode(STDOUT, ":encoding(UTF-8)");
 print "
 Hi, $docdata{controls}{human}!
 I have done what you wanted.
